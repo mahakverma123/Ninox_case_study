@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: fct_mrr_movements_monthly
+    description: >
+       MRR by movements aggregated by months. Summarize SaaS revenue movements into six mandatory categories at a monthly grain.
+    columns:
+      - name: reporting_month
+        description: Month under observation. Data test checks that it is unique and not null.
+        data_tests:
+          - unique
+          - not_null
+      - name: end_of_period_mrr
+        description: Final MRR for the business at month-end. Data test checks that it is not null.
+        data_tests:
+          - not_null
+
+  - name: fct_mrr_movements_reporting
+    description: >
+      Reporting table for MRR movememnts. Retains Country and Plan dimensions for interactive slicing.
+    columns:
+      - name: reporting_month
+        description: Month under observation. Data test checks that it is not null.
+        data_tests:
+          - not_null
+      - name: country
+        description: Country name for regional analysis. Data test checks that it is not null.
+        data_tests:
+          - not_null
+
+  - name: fct_mrr_cohorts
+    description: >
+       Final retention result set. Tracks customer cohorts over a 36-month timeline (0-35) across multiple renewals.
+    columns:
+      - name: cohort_month
+        description: Monthly cohort under observation. Data test checks that it is not null.
+        data_tests:
+          - not_null
+      - name: month_number
+        description: Months since acquisition. Data test checks that it is not null.
+        data_tests:
+          - not_null
+      - name: retention_percentage
+        description: (Retained MRR in Month N / Month 0 MRR) * 100. Data test checks that it is not null.
+        data_tests:
+          - not_null
