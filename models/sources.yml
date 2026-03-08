@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw_data
+    database: ninox-case-study-489121
+    schema: Ninox
+    tables:
+      - name: Orders
+      - name: Subscriptions
+      - name: Users

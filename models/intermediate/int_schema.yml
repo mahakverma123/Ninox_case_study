@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: int_base
+    description: >
+      Build fact table by joining staged orders, subscriptions, and users. 
+      calculated net revenue and truncates dates to the first of the month.
+    columns:
+      - name: order_id
+        description: Primary key. Validates order_id is not null and unique
+        data_tests:
+          - unique
+          - not_null
+      - name: monthly_mrr
+        description: Validates monthly mrr is not null
+        data_tests:
+          - not_null
+
+  - name: int_mrr_detailed
+    description: >
+      The 'Scaffolded' model. Every 1-year order is exploded into 12 individual 
+      monthly records to create a continuous revenue timeline.
+    columns:
+      - name: subscription_id
+        description: Foreign key. Combined with reporting_month, it forms the grain of this table. Data test validates it is not null.
+        data_tests:
+          - not_null
+      - name: reporting_month
+        description: The specific calendar month for the MRR record. Data test validates it is not null.
+        data_tests:
+          - not_null
+      - name: subscription_month_number
+        description: >
+          The 'Age' index of the subscription (0 to 11). Data test ensures no order exceeds its 1-year mandate.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0,1,2,3,4,5,6,7,8,9,10,11]
+                quote: false
+
+  - name: int_mrr_movements
+    description: >
+      Customer-month level table categorizing revenue changes. Uses window functions 
+      to detect New, Expansion, Contraction, and Lost MRR.
+    columns:
+      - name: customer_id
+        description: Partitioning key for LAG functions. Data test validates it is not null.
+        data_tests:
+          - not_null
+      - name: reporting_month
+        description: Month of the movement. Data test validates it is not null.
+        data_tests:
+          - not_null
+      - name: end_of_period
+        description: Total MRR for the customer at month-end. Used for dashboard totals. Data test validates it is not null.
+        data_tests:
+          - not_null
+
+  - name: int_mrr_cohorts
+    description: >
+      Aggregated retention analytics. Groups customers by their 'Birth Month' 
+      and tracks decay/growth over the full 36-month history.
+    columns:
+      - name: cohort_month
+        description: The first calendar month a customer generated MRR. Data test validates it is not null.
+        data_tests:
+          - not_null
+      - name: month_number
+        description: Months since acquisition. Values range from 0 to 35 for this dataset. Data test validates it is not null.
+        data_tests:
+          - not_null
+      - name: retention_percentage
+        description: (Current MRR / Month 0 MRR) * 100. Data test validates it is not null.
+        data_tests:
+          - not_null

@@ -1,0 +1,74 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: >
+      Cleaned version of the raw orders data. This model handles removing  
+      of order_id, parses the checkout_metadata JSON, and standardizes dates.
+    columns:
+      - name: order_id
+        description: >
+          Primary key. Data test validates that order_id is not null and unique.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: subscription_id
+        description: Links to the subscription dimension. Data test checks that subscription_id is not null .
+        data_tests:
+          - not_null
+
+      - name: tax_percentage
+        description: >
+          Extracted from JSON. 
+          Data test verifies that tax_percentage is not null as NULL tax values were defaulted to 0.0 to protect financial calculations. 
+        data_tests:
+          - not_null
+
+      - name: exchange_rate
+        description: Extracted from JSON; used to convert local currency to EUR. Data test checks that exchange_rate is not null.
+        data_tests:
+          - not_null
+
+  - name: stg_subscriptions
+    description: >
+      Cleaned subscription metadata. Makes the plan_name consistent and checks if dates are not missing.
+    columns:
+      - name: subscription_id
+        description: Primary key for the subscription dimension. Checks that subscription_id is not null and unique.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: plan_name 
+        description: Standardized plan name. Validates that lowercasing logic. Checks that plan_name is not null and it accepts only given values.
+        data_tests: 
+        - not_null 
+        - accepted_values: 
+            arguments: 
+              values: ['pro', 'starter']
+
+      - name: number_of_licenses
+        description: >
+          Checks that number_of_licenses is not null.
+        data_tests:
+          - not_null
+
+      - name: start_date
+        description: >
+          Gives warning when subscription start_date is null without breaking the pipeline run.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+              
+
+  - name: stg_users
+    description: >
+      Cleaned user metadata. Standardize the country names.
+    columns:
+      - name: user_id
+        description: Primary Key. Checks that user_id is unique and not null.
+        data_tests:
+          - unique
+          - not_null
