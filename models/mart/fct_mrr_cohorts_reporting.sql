@@ -9,7 +9,7 @@ select
     month_number,
     --added year, country and plan name to segment retention analysis using slicers
     extract(year from cohort_month) as cohort_year,
-    country,
+    coalesce(country, 'Unknown') as country,
     plan_name,
     -- round reatined_mrr to decimal points.
     round(retained_mrr, 2) as retained_mrr_eur,
