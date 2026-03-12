@@ -13,21 +13,33 @@ The raw dataset is structured as a Snowflake Schema. The central Fact Table (Ord
 ●	**Staging Layer (stg_)**: This layer acts as a mirror of the raw CSV files. This layer handles data cleanup, removing duplicates, casting timestamp strings to proper DATE types for calculation, and parsing JSON metadata.
 
 ●	**Intermediate Layer (int_)**: 
-**Joining data**: I started by combining the three datasets (orders  subscriptions  users) to get all the data in one single table (int_base). 
+
+**Joining data**: I started by combining the three datasets (orders-->subscriptions-->users) to get all the data in one single table (int_base). 
+
 **Scaffolding (Data Explosion)**: Each order covers a 12-month term but is stored as a single row. To analyze revenue month by month, I “expanded” each order by combining it with a list of months (0–11), creating a continuous monthly timeline for every transaction.
+
 **MRR Movement Logic**: Using the LAG () function, I compared monthly recurring revenue (MRR) for each customer month over month. This lets me categorize MRR into types like New, Expansion, Contraction, Lost, or Start of Period.
+
 **Cohort Retention Logic**: To track customer stickiness, I identified the Start Month for every user using (MIN(reporting_month)). Then I calculated a age index (Month 0 to 35). This logic links multiple years of renewal orders back to the original acquisition date, giving a true picture of long-term customer value.
 
 ●	**Marts Layer (fct_)**: This layer is the final, reporting-ready stage of the data pipeline, where detailed logic is turned into structured tables ready for analysis. It includes 4 tables.
-o	**fct_mrr_movements_monthly**: Summarizes revenue changes per month, showing totals for all movement types: Start of Period, New, Expansion, Contraction, Lost, and End of Period.
-o	**fct_mrr_movements_reporting**: Used to visualize MRR movements. Builds on the monthly summary but keeps Users, Country and Plan details. This lets me explore revenue trends interactively by segmenting at country or plan level, and also allows me to get user count in the tool tips wherever it might be helpful.
-o	**fct_mrr_cohorts_summary**: Tracks customer cohorts from their first month over a 36-month time, showing retained revenue and retention percentage for cohort analysis.
-o	**fct_mrr_cohorts_reporting**: Used to visualize cohort retention. Builds on the cohort summary but keeps Country and Plan details to segment at country or plan level.
+
+**fct_mrr_movements_monthly**: Summarizes revenue changes per month, showing totals for all movement types: Start of Period, New, Expansion, Contraction, Lost, and End of Period.
+
+**fct_mrr_movements_reporting**: Used to visualize MRR movements. Builds on the monthly summary but keeps Users, Country and Plan details. This lets me explore revenue trends interactively by segmenting at country or plan level, and also allows me to get user count in the tool tips wherever it might be helpful.
+
+**fct_mrr_cohorts_summary**: Tracks customer cohorts from their first month over a 36-month time, showing retained revenue and retention percentage for cohort analysis.
+
+**fct_mrr_cohorts_reporting**: Used to visualize cohort retention. Builds on the cohort summary but keeps Country and Plan details to segment at country or plan level.
 
 ●	**Macros**: To keep the calculations consistent and the code clean I moved the key formulas into three dbt macros:
-o	**calculate_net_revenue**: Converts gross revenue to net by removing tax and applying exchange rates so all revenue is standardised in EUR.
-o	**calculate_mrr**: Calculates monthly recurring revenue by dividing net revenue by the fixed 12-month subscription term.
-o	**to_start_of_month**: Converts any date to the first day of its month so cohort analysis and monthly reporting stay accurate.
+
+**calculate_net_revenue**: Converts gross revenue to net by removing tax and applying exchange rates so all revenue is standardised in EUR.
+
+**calculate_mrr**: Calculates monthly recurring revenue by dividing net revenue by the fixed 12-month subscription term.
+
+**to_start_of_month**: Converts any date to the first day of its month so cohort analysis and monthly reporting stay accurate.
+
 ●	**Visualization**: To clearly communicate the Ninox SaaS metrics required for this assignment, I designed a Power BI dashboard structured to move from high-level totals to granular historical trends and long-term customer behavior.
 
 ![Dashboard_Final](https://github.com/user-attachments/assets/c524369a-905a-41e6-beaf-e7d886cd9114)
@@ -92,6 +104,7 @@ Additionally, dbt integrates well with version control systems like Git, which h
 **Recommendation**: Deploy a Renewal Protection campaign because you know exactly when the 12-month term ends, the Customer Success team should proactively engage high-value accounts couple of months before the term ends, to secure the renewal and identify expansion opportunities before the user churn.
 •	**Insight 5**: Contraction MRR (-€626) is currently a minor issue compared to full Churn (-€10,471), meaning customers are more likely to leave entirely than to downgrade their license counts.
 **Recommendation**: Implement a Down sell Save-Offer. If a customer attempts to churn, offer them a path to contract (Contraction) rather than losing the account entirely. "MRR saved is just as powerful as MRR gained".
+
 
 
 
