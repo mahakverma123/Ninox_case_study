@@ -1,5 +1,7 @@
 # NINOX CASE STUDY
 
+[View the Power BI Dashboard](https://app.powerbi.com/view?r=eyJrIjoiYzNlZWQ2MDUtNGIxZi00OTQ5LWIyYjQtMzNjMWUxZWRkNDJkIiwidCI6ImYwZWNmMWMwLTdmMWQtNDRhZC04NjA1LTBkYWQ4YTI5NWU5ZCJ9&pageName=ReportSection)
+
 ## “Your data modeling approach and architecture decisions”
 
 ### Data modeling approach and architecture decisions:
@@ -125,6 +127,7 @@ Additionally, dbt integrates well with version control systems like Git, which h
 
 - **Insight 5**: Contraction MRR (-€626) is currently a minor issue compared to full Churn (-€10,471), meaning customers are more likely to leave entirely than to downgrade their license counts.
     - **Recommendation**: Implement a Down sell Save-Offer. If a customer attempts to churn, offer them a path to contract (Contraction) rather than losing the account entirely. "MRR saved is just as powerful as MRR gained".
+
 
 
 
