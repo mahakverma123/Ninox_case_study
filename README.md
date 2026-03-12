@@ -10,8 +10,8 @@ The raw dataset is structured as a Snowflake Schema. The central Fact Table (Ord
 
 ![dbt Lineage](https://github.com/user-attachments/assets/f67689bf-42cc-48d8-9a64-623bfe420c61)
 
-- ●	**Staging Layer (stg_)**: This layer acts as a mirror of the raw CSV files. This layer handles data cleanup, removing duplicates, casting timestamp strings to proper DATE types for calculation, and parsing JSON metadata.
-- ●	**Intermediate Layer (int_)**: 
+- **Staging Layer (stg_)**: This layer acts as a mirror of the raw CSV files. This layer handles data cleanup, removing duplicates, casting timestamp strings to proper DATE types for calculation, and parsing JSON metadata.
+- **Intermediate Layer (int_)**: 
 
     - **Joining data**: I started by combining the three datasets (orders-->subscriptions-->users) to get all the data in one single table (int_base). 
     
@@ -21,7 +21,7 @@ The raw dataset is structured as a Snowflake Schema. The central Fact Table (Ord
     
     - **Cohort Retention Logic**: To track customer stickiness, I identified the Start Month for every user using (MIN(reporting_month)). Then I calculated a age index (Month 0 to 35). This logic links multiple years of renewal orders back to the original acquisition date, giving a true picture of long-term customer value.
 
-- ●	**Marts Layer (fct_)**: This layer is the final, reporting-ready stage of the data pipeline, where detailed logic is turned into structured tables ready for analysis. It includes 4 tables.
+- **Marts Layer (fct_)**: This layer is the final, reporting-ready stage of the data pipeline, where detailed logic is turned into structured tables ready for analysis. It includes 4 tables.
 
     - **fct_mrr_movements_monthly**: Summarizes revenue changes per month, showing totals for all movement types: Start of Period, New, Expansion, Contraction, Lost, and End of Period.
 
@@ -31,7 +31,7 @@ The raw dataset is structured as a Snowflake Schema. The central Fact Table (Ord
 
     - **fct_mrr_cohorts_reporting**: Used to visualize cohort retention. Builds on the cohort summary but keeps Country and Plan details to segment at country or plan level.
 
-- ●	**Macros**: To keep the calculations consistent and the code clean I moved the key formulas into three dbt macros:
+- **Macros**: To keep the calculations consistent and the code clean I moved the key formulas into three dbt macros:
 
     - **calculate_net_revenue**: Converts gross revenue to net by removing tax and applying exchange rates so all revenue is standardised in EUR.
 
@@ -39,31 +39,19 @@ The raw dataset is structured as a Snowflake Schema. The central Fact Table (Ord
 
     - **to_start_of_month**: Converts any date to the first day of its month so cohort analysis and monthly reporting stay accurate.
 
-- ●	**Visualization**: To clearly communicate the Ninox SaaS metrics required for this assignment, I designed a Power BI dashboard structured to move from high-level totals to granular historical trends and long-term customer behavior.
-
-![Dashboard_Final](https://github.com/user-attachments/assets/c524369a-905a-41e6-beaf-e7d886cd9114)
+- **Visualization**: To clearly communicate the Ninox SaaS metrics required for this assignment, I designed a Power BI dashboard structured to move from high-level totals to granular historical trends and long-term customer behavior.
 
     - **Interactive Segmentation**: To enable a microscopic view of the business, I implemented a filtering system using Year, Plan Name, and Country. While the users table was provided as optional context, I made the architectural decision to integrate it into the gold layer to fulfil the requirement of better storytelling.
-
     - **Visual Narrative Structure**: The dashboard is organized into three thematic rows to tell a complete business story:
-
-        - **Row 1: Macro Performance (The Status Quo):**
-
-            - **KPI Cards**: Highlight the four primary components of revenue flow: New, Expansion, Lost, and Contraction MRR, allowing for an immediate pulse check on growth efficiency.
-
-            - **MRR Trend**: A bar chart visualizing the End of Period MRR over the full 36-month timeline. I utilized conditional formatting (Green for peaks, Red for lows) to instantly signal performance outliers to leadership.
-
-            - **Segmentation Visuals**: "MRR by Plan" and "MRR by Country" identify where the revenue density lives, revealing which product tiers and geographies act as the primary growth engines.
-
-        - **Row 2: Marginal Change (The Living Story):**
-
-            - **MRR Movements (Waterfall)**: This acts as the financial bridge between the start and end of a period, visualizing exactly how acquisition and expansion outweighed churn and contraction.
-
-            - **MRR Movements over Time**: A stacked column chart that provides historical context to the waterfall, showing the yearly momentum of inflows and outflows.
-
-        - **Row 3: Long-term Customer Value (The Stickiness Story):**
-
-            - **Monthly Cohort Retentio**n: A heatmap/matrix visualizing how retention for each monthly cohort varies over the span of their lifetime including renewals and churn.
+          - **Row 1: Macro Performance (The Status Quo):**
+              - **KPI Cards**: Highlight the four primary components of revenue flow: New, Expansion, Lost, and Contraction MRR, allowing for an immediate pulse check on growth efficiency.
+              - **MRR Trend**: A bar chart visualizing the End of Period MRR over the full 36-month timeline. I utilized conditional formatting (Green for peaks, Red for lows) to instantly signal performance outliers to leadership.
+              - **Segmentation Visuals**: "MRR by Plan" and "MRR by Country" identify where the revenue density lives, revealing which product tiers and geographies act as the primary growth engines.
+          - **Row 2: Marginal Change (The Living Story):**
+              - **MRR Movements (Waterfall)**: This acts as the financial bridge between the start and end of a period, visualizing exactly how acquisition and expansion outweighed churn and contraction.
+              - **MRR Movements over Time**: A stacked column chart that provides historical context to the waterfall, showing the yearly momentum of inflows and outflows.
+          - **Row 3: Long-term Customer Value (The Stickiness Story):**
+              - **Monthly Cohort Retention:** A heatmap/matrix visualizing how retention for each monthly cohort varies over the span of their lifetime including renewals and churn.
 
     - **Enhanced UX**: All visuals are enriched by tooltips. In addition to displaying absolute EUR amounts, I integrated distinct user counts into the tooltips to show the user base contributing to the revenue.
 
@@ -112,19 +100,20 @@ Additionally, dbt integrates well with version control systems like Git, which h
 **Disclaimer: All the insights and recommendations for the insights are solely based on the data provided as part of the case study.**
 
 - **Insight 1**: While Ninox shows healthy growth through 2024, there is a catastrophic spike in Lost MRR starting in late 2025 and continuing into 2026.
-    **Recommendation**: Conduct an urgent Churn analysis for the 2026 period. Since subscriptions are strict 1-year terms, this suggests a mass failure to renew. Investigate if a specific product update or a new competitor entered the market during this window.
+        - **Recommendation**: Conduct an urgent Churn analysis for the 2026 period. Since subscriptions are strict 1-year terms, this suggests a mass failure to renew. Investigate if a specific product update or a new competitor entered the market during this window.
 
-- **Insight 2**: The Pro Plan is the primary revenue driver. The Pro plan contributes nearly twice the revenue of Starter plan. 
-    **Recommendation**: Double down on the Starter to Pro upgrade path. Use the Starter plan as a low-friction acquisition tool, but implement automated in-app triggers to migrate users to Pro as their usage, feature requirement or team size grows.
+- **Insight 2**: The Pro Plan is the primary revenue driver. The Pro plan contributes nearly twice the revenue of Starter plan.
+      - **Recommendation**: Double down on the Starter to Pro upgrade path. Use the Starter plan as a low-friction acquisition tool, but implement automated in-app triggers to migrate users to Pro as their usage, feature requirement or team size grows.
 
 - **Insight 3**: Ninox revenue is highly concentrated in the USA, Canada, UK, and France, making the business vulnerable to economic shifts in those specific regions.
-    **Recommendation**: Diversify the geographic portfolio. Increasing marketing spend in regions like Spain and Germany, could provide a safer growth alternative to the saturated markets.
+      - **Recommendation**: Diversify the geographic portfolio. Increasing marketing spend in regions like Spain and Germany, could provide a safer growth alternative to the saturated markets.
 
 - **Insight 4**: Customer stickiness is high during the initial term, but the business faces a significant drop in revenue retention at the 12- and 24-month marks.
-    **Recommendation**: Deploy a Renewal Protection campaign because you know exactly when the 12-month term ends, the Customer Success team should proactively engage high-value accounts couple of months before the term ends, to secure the renewal and identify expansion opportunities before the user churn.
+    - **Recommendation**: Deploy a Renewal Protection campaign because you know exactly when the 12-month term ends, the Customer Success team should proactively engage high-value accounts couple of months before the term ends, to secure the renewal and identify expansion opportunities before the user churn.
 
 - **Insight 5**: Contraction MRR (-€626) is currently a minor issue compared to full Churn (-€10,471), meaning customers are more likely to leave entirely than to downgrade their license counts.
-    **Recommendation**: Implement a Down sell Save-Offer. If a customer attempts to churn, offer them a path to contract (Contraction) rather than losing the account entirely. "MRR saved is just as powerful as MRR gained".
+    - **Recommendation**: Implement a Down sell Save-Offer. If a customer attempts to churn, offer them a path to contract (Contraction) rather than losing the account entirely. "MRR saved is just as powerful as MRR gained".
+
 
 
 
