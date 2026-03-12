@@ -5,14 +5,14 @@ with mrr_details as (
     select * from {{ ref('int_mrr_detailed') }}
 ),
 
--- 1. Identify all unique months and add the next months to identify Lost movements
+-- Identify all unique months and add the next months to identify Lost movements
 all_months as (
     select distinct reporting_month from mrr_details
     union distinct
     select date_add(max(reporting_month), interval 1 month) from mrr_details
 ),
 
--- 2. Create a spine of every customer for every reporting month
+-- Create a spine of every customer for every reporting month
 customer_spine as (
     select
         c.customer_id,
@@ -21,7 +21,7 @@ customer_spine as (
     cross join all_months m
 ),
 
--- 3. Join details like actual MRR with the customer spine 
+-- Join details like actual MRR with the customer spine 
 mrr_joined as (
     select
         s.customer_id,
@@ -36,7 +36,7 @@ mrr_joined as (
         and s.reporting_month = d.reporting_month
 ),
 
--- 4. Calculate the previous month's MRR for comparison
+-- Calculate the previous month's MRR for comparison
 mrr_with_lag as (
     select
         *,
@@ -44,7 +44,7 @@ mrr_with_lag as (
     from mrr_joined
 ),
 
--- 5. Apply categorization according to the given business rules
+-- Apply categorization according to the given business rules
 categorized_movements as (
     select
         customer_id,
@@ -81,6 +81,6 @@ categorized_movements as (
     from mrr_with_lag
 )
 
--- 6. Exclude rows with no activity to keep the dataset manageable
+-- Exclude rows with no activity to keep the dataset manageable
 select * from categorized_movements
 where start_of_period > 0 or end_of_period > 0

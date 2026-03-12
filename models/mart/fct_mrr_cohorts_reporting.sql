@@ -15,4 +15,4 @@ select
     round(retained_mrr, 2) as retained_mrr_eur,
     round(retention_percentage, 2) as retention_percentage
 from {{ ref('int_mrr_cohorts') }}
-order by 1, 3, 4, 5
+order by 1, 3, 4, 5, 6
