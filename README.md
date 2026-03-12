@@ -112,19 +112,20 @@ Additionally, dbt integrates well with version control systems like Git, which h
 **Disclaimer: All the insights and recommendations for the insights are solely based on the data provided as part of the case study.**
 
 - **Insight 1**: While Ninox shows healthy growth through 2024, there is a catastrophic spike in Lost MRR starting in late 2025 and continuing into 2026.
-- **Recommendation**: Conduct an urgent Churn analysis for the 2026 period. Since subscriptions are strict 1-year terms, this suggests a mass failure to renew. Investigate if a specific product update or a new competitor entered the market during this window.
+    - **Recommendation**: Conduct an urgent Churn analysis for the 2026 period. Since subscriptions are strict 1-year terms, this suggests a mass failure to renew. Investigate if a specific product update or a new competitor entered the market during this window.
 
 - **Insight 2**: The Pro Plan is the primary revenue driver. The Pro plan contributes nearly twice the revenue of Starter plan.
-- **Recommendation**: Double down on the Starter to Pro upgrade path. Use the Starter plan as a low-friction acquisition tool, but implement automated in-app triggers to migrate users to Pro as their usage, feature requirement or team size grows.
+    - **Recommendation**: Double down on the Starter to Pro upgrade path. Use the Starter plan as a low-friction acquisition tool, but implement automated in-app triggers to migrate users to Pro as their usage, feature requirement or team size grows.
 
 - **Insight 3**: Ninox revenue is highly concentrated in the USA, Canada, UK, and France, making the business vulnerable to economic shifts in those specific regions.
-- **Recommendation**: Diversify the geographic portfolio. Increasing marketing spend in regions like Spain and Germany, could provide a safer growth alternative to the saturated markets.
+    - **Recommendation**: Diversify the geographic portfolio. Increasing marketing spend in regions like Spain and Germany, could provide a safer growth alternative to the saturated markets.
 
 - **Insight 4**: Customer stickiness is high during the initial term, but the business faces a significant drop in revenue retention at the 12- and 24-month marks.
-- **Recommendation**: Deploy a Renewal Protection campaign because you know exactly when the 12-month term ends, the Customer Success team should proactively engage high-value accounts couple of months before the term ends, to secure the renewal and identify expansion opportunities before the user churn.
+    - **Recommendation**: Deploy a Renewal Protection campaign because you know exactly when the 12-month term ends, the Customer Success team should proactively engage high-value accounts couple of months before the term ends, to secure the renewal and identify expansion opportunities before the user churn.
 
 - **Insight 5**: Contraction MRR (-€626) is currently a minor issue compared to full Churn (-€10,471), meaning customers are more likely to leave entirely than to downgrade their license counts.
-- **Recommendation**: Implement a Down sell Save-Offer. If a customer attempts to churn, offer them a path to contract (Contraction) rather than losing the account entirely. "MRR saved is just as powerful as MRR gained".
+    - **Recommendation**: Implement a Down sell Save-Offer. If a customer attempts to churn, offer them a path to contract (Contraction) rather than losing the account entirely. "MRR saved is just as powerful as MRR gained".
+
 
 
 
