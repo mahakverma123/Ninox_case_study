@@ -14,13 +14,13 @@ The raw dataset is structured as a Snowflake Schema. The central Fact Table (Ord
 
 ●	**Intermediate Layer (int_)**: 
 
-**Joining data**: I started by combining the three datasets (orders-->subscriptions-->users) to get all the data in one single table (int_base). 
-
-**Scaffolding (Data Explosion)**: Each order covers a 12-month term but is stored as a single row. To analyze revenue month by month, I “expanded” each order by combining it with a list of months (0–11), creating a continuous monthly timeline for every transaction.
-
-**MRR Movement Logic**: Using the LAG () function, I compared monthly recurring revenue (MRR) for each customer month over month. This lets me categorize MRR into types like New, Expansion, Contraction, Lost, or Start of Period.
-
-**Cohort Retention Logic**: To track customer stickiness, I identified the Start Month for every user using (MIN(reporting_month)). Then I calculated a age index (Month 0 to 35). This logic links multiple years of renewal orders back to the original acquisition date, giving a true picture of long-term customer value.
+    **Joining data**: I started by combining the three datasets (orders-->subscriptions-->users) to get all the data in one single table (int_base). 
+    
+    **Scaffolding (Data Explosion)**: Each order covers a 12-month term but is stored as a single row. To analyze revenue month by month, I “expanded” each order by combining it with a list of months (0–11), creating a continuous monthly timeline for every transaction.
+    
+    **MRR Movement Logic**: Using the LAG () function, I compared monthly recurring revenue (MRR) for each customer month over month. This lets me categorize MRR into types like New, Expansion, Contraction, Lost, or Start of Period.
+    
+    **Cohort Retention Logic**: To track customer stickiness, I identified the Start Month for every user using (MIN(reporting_month)). Then I calculated a age index (Month 0 to 35). This logic links multiple years of renewal orders back to the original acquisition date, giving a true picture of long-term customer value.
 
 ●	**Marts Layer (fct_)**: This layer is the final, reporting-ready stage of the data pipeline, where detailed logic is turned into structured tables ready for analysis. It includes 4 tables.
 
@@ -73,6 +73,7 @@ The raw dataset is structured as a Snowflake Schema. The central Fact Table (Ord
 ### Tools and Technologies:
 
 **BigQuery:** I have chosen BigQuery as my data warehouse because of its fast query performance and seamless integration with popular data visualization and modeling tools like powerbi and dbt. It’s also simple to use, scales well as data grows.
+
 **dbt (Data Build Tool)**: To clean and model the raw CSV files, I used dbt because it makes it easy to create different models for different purposes. In my case study, I created a staging layer for cleaning the data, an intermediate layer to perform calculations and join tables, and a mart layer to generate the final output for visualization. Beyond this, dbt allows me to maintain data quality by adding multiple tests in YML files, ensuring that the data remains reliable and consistent.
 Additionally, dbt integrates well with version control systems like Git, which helps track changes and maintain a clear history of code updates. By organizing the project into layers and using tests with version control, I found it much easier to manage and maintain the code over time.
 
@@ -125,6 +126,7 @@ Additionally, dbt integrates well with version control systems like Git, which h
 
 **Insight 5**: Contraction MRR (-€626) is currently a minor issue compared to full Churn (-€10,471), meaning customers are more likely to leave entirely than to downgrade their license counts.
 **Recommendation**: Implement a Down sell Save-Offer. If a customer attempts to churn, offer them a path to contract (Contraction) rather than losing the account entirely. "MRR saved is just as powerful as MRR gained".
+
 
 
 
