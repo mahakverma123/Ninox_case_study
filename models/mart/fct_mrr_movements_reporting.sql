@@ -2,6 +2,7 @@
 
 -- This query creates a detailed, customer-level reporting table for interactive dashboards.
 select
+    customer_id,
     reporting_month,
     -- Split reporting_month into separate columns: year and month.
     format_date('%m', reporting_month) as month,
@@ -14,7 +15,7 @@ select
     round(sum(expansion_mrr), 2) as expansion_mrr,
     round(sum(contraction_mrr), 2) as contraction_mrr,
     round(sum(lost_mrr), 2) as lost_mrr,
-    round(sum(end_of_period), 2) as end_of_period_mrr
+    round(sum(end_of_period), 2) as end_of_period_mrr,
 from {{ ref('int_mrr_movements') }}
-group by 1, 2, 3, 4, 5
-order by 1, 4, 5
+group by 1, 2, 3, 4, 5, 6
+order by 2, 4, 5

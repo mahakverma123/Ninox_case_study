@@ -6,7 +6,7 @@ with mrr_details as (
     where reporting_month is not null 
 ),
 
--- 1. Identify first month a customer started, also called Cohort Month.
+-- Identify first month a customer started, also called Cohort Month.
 customer_cohort_map as (
     select
         customer_id,
@@ -15,7 +15,7 @@ customer_cohort_map as (
     group by 1
 ),
 
--- 2. Create a customer level cohort timeline 
+-- Create a customer level cohort timeline 
 customer_cohort_details as (
     select
         d.customer_id,
@@ -30,7 +30,7 @@ customer_cohort_details as (
     join customer_cohort_map c on d.customer_id = c.customer_id
 ),
 
--- 3. Aggregate to the Cohort age level to get the month 0 baseline
+-- Aggregate to the Cohort age level to get the month 0 baseline
 cohort_aggregates as (
     select
         cohort_month,
@@ -43,7 +43,7 @@ cohort_aggregates as (
     group by 1, 2, 3, 4 --added country and plan to group by
 ),
 
--- 4. Extract the month 0 baseline for each cohort to calculate percentages
+-- Extract the month 0 baseline for each cohort to calculate percentages
 retention_with_baseline as (
     select
         *,
@@ -55,7 +55,7 @@ retention_with_baseline as (
     from cohort_aggregates
 )
 
--- 5. Final Result : Absolute EUR and Retention Percentage
+-- Final Result : Absolute EUR and Retention Percentage
 select
     cohort_month,
     month_number,
